@@ -1,10 +1,10 @@
-import React from 'react';
-import { List, Col, Row, Icon, Tooltip, Button, notification } from 'antd';
+import React from 'react'
+import { List, Col, Row, Icon, Tooltip, Button, notification, Input } from 'antd'
 
-import Item from './Item';
-import Filter from './Filter';
+import Item from './Item'
+import Filter from './Filter'
 
-import './style.scss';
+import './style.scss'
 
 class ListVideo extends React.Component {
   state = {
@@ -12,33 +12,32 @@ class ListVideo extends React.Component {
     playlistSearch: '',
   }
 
-  handleFilter = (isFilter) => {
+  handleFilter = isFilter => {
     this.setState({
       playlistFilter: isFilter,
     })
   }
 
-  handleSearch = (keyword) => {
+  handleSearch = keyword => {
     this.setState({
       playlistSearch: keyword,
     })
   }
 
   render() {
-    const { listSong, changeSong, shuffleSong, loopPlaylist, addSong, removeSong } = this.props;
-    const { playlistFilter, playlistSearch } = this.state;
+    const { listSong, changeSong, shuffleSong, loopPlaylist, addSong, removeSong } = this.props
+    const { playlistFilter, playlistSearch } = this.state
 
-    let listSongFiltered = listSong;
+    let listSongFiltered = listSong
     if (playlistFilter) {
-      listSongFiltered = listSong.filter(song =>
-        song.my
-      )
+      listSongFiltered = listSong.filter(song => song.my)
     }
     if (playlistSearch) {
-      listSongFiltered = listSongFiltered.filter(song =>
-        song.name.toLocaleLowerCase().includes(playlistSearch.toLocaleLowerCase()) ||
-        song.author.toLocaleLowerCase().includes(playlistSearch.toLocaleLowerCase()) ||
-        song.id === playlistSearch
+      listSongFiltered = listSongFiltered.filter(
+        song =>
+          song.name.toLocaleLowerCase().includes(playlistSearch.toLocaleLowerCase()) ||
+          song.author.toLocaleLowerCase().includes(playlistSearch.toLocaleLowerCase()) ||
+          song.id === playlistSearch,
       )
     }
 
@@ -52,30 +51,25 @@ class ListVideo extends React.Component {
           />
         </Col>
         <Col className="list-tools">
-          <Tooltip placement="topLeft" title={"Loop playlist"}>
-            <Button
-              type="link"
-              shape="circle"
-              icon="retweet"
-              ghost
-              onClick={loopPlaylist}
-            />
+          <Tooltip placement="topLeft" title={'Loop playlist'}>
+            <Button type="link" shape="circle" icon="retweet" ghost onClick={loopPlaylist} />
           </Tooltip>
-          <Tooltip placement="topLeft" title={"Shuffle playlist"}>
-            <Button
-              type="link"
-              shape="circle"
-              icon="swap"
-              ghost
-              onClick={shuffleSong}
-            />
+          <Tooltip placement="topLeft" title={'Shuffle playlist'}>
+            <Button type="link" shape="circle" icon="swap" ghost onClick={shuffleSong} />
           </Tooltip>
+          <Input.Search
+            placeholder="Search on Youtube"
+            style={{ width: '60%', float: 'right' }}
+            enterButton={<Icon type="youtube" style={{ fontSize: '25px' }} />}
+          />
         </Col>
         <Col className="list-songs">
           <List
             itemLayout="vertical"
             dataSource={listSongFiltered}
-            renderItem={item => <Item data={item} changeSong={changeSong} removeSong={removeSong} />}
+            renderItem={item => (
+              <Item data={item} changeSong={changeSong} removeSong={removeSong} />
+            )}
             className="list-video"
           />
         </Col>
@@ -84,4 +78,4 @@ class ListVideo extends React.Component {
   }
 }
 
-export default ListVideo;
+export default ListVideo

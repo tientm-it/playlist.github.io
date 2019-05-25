@@ -23,13 +23,13 @@ const loadableRoutes = {
   '/dashboard/alpha': {
     component: loadable(() => import('pages/Dashboard/DashboardAlphaPage')),
   },
-  // '/Playlist': {
-  //   component: loadable(() => import('pages/YouTube/YouTubeViewPage')),
-  // },
+  '/Playlist': {
+    component: loadable(() => import('pages/YouTube/YouTubeViewPage')),
+  },
   '/logout': {
     component: loadable(() => import('pages/Logout')),
   },
-  '/Playlist': {
+  '/Playlist/dark': {
     component: loadable(() => import('pages/PlayList')),
   },
 }

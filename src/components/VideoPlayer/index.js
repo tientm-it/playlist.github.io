@@ -1,57 +1,46 @@
-import React from 'react';
-import videojs from 'video.js';
-import { Icon } from 'antd';
+import React from 'react'
+import videojs from 'video.js'
+import { Icon } from 'antd'
 
-import 'videojs-youtube';
+import 'videojs-youtube'
 
-import 'video.js/dist/video-js.css';
-import './style.scss';
+import 'video.js/dist/video-js.css'
+import './style.scss'
 
 class VideoPlayer extends React.Component {
   componentDidMount = () => {
-    const { videoId, nextSong, errorSong } = this.props;
+    const { videoId, nextSong, errorSong } = this.props
 
-    var vjsButtonComponent = videojs.getComponent('Button');
-    videojs.registerComponent('NextTrack', videojs.extend(vjsButtonComponent, {
-      constructor: function () {
-        vjsButtonComponent.apply(this, arguments);
-      },
-      handleClick: function () {
-        nextSong();
-      },
-      buildCSSClass: function () {
-        return 'vjs-control vjs-next-track-button';
-      },
-      createControlTextEl: function (button) {
-        return (
-          <div>
-            {button}
-            Next
-            <Icon type="step-forward" />
-          </div>
-          // <button class="vjs-control vjs-next-track-button" type="button" aria-disabled="false">
-          //   <span aria-hidden="true" class="vjs-icon-placeholder">
-          //   </span>
-          // </button>
-        );
-      }
-    }));
+    var vjsButtonComponent = videojs.getComponent('Button')
+    videojs.registerComponent(
+      'NextTrack',
+      videojs.extend(vjsButtonComponent, {
+        constructor: function() {
+          vjsButtonComponent.apply(this, arguments)
+        },
+        handleClick: function() {
+          nextSong()
+        },
+        buildCSSClass: function() {
+          return 'vjs-control vjs-next-track-button'
+        },
+      }),
+    )
     // instantiate Video.js
     const options = this.videoJsOptions(videoId)
     this.player = videojs(this.videoNode, options, function onPlayerReady() {
       this.on('ended', () => {
         setTimeout(nextSong(), 2000)
-      });
-      this.on('error', (error) => {
+      })
+      this.on('error', error => {
         console.log(this)
         console.log(this.error_.message)
         setTimeout(errorSong(this.error_.message), 2000)
-      });
-      this.getChild('controlBar')
-          .addChild('NextTrack', {}, 1);
+      })
+      this.getChild('controlBar').addChild('NextTrack', {}, 1)
 
-      console.log(this);
-    });
+      console.log(this)
+    })
   }
 
   // destroy player on unmount
@@ -62,15 +51,17 @@ class VideoPlayer extends React.Component {
   }
 
   // videojs options
-  videoJsOptions = (videoId) => ({
+  videoJsOptions = videoId => ({
     autoplay: true,
     fluid: true,
     controls: true,
-    techOrder: [ "youtube" ],
-    sources: [{
-      type: 'video/youtube',
-      src: `https://www.youtube.com/watch?v=${videoId}&rel=0&showinfo=1`,
-    }],
+    techOrder: ['youtube'],
+    sources: [
+      {
+        type: 'video/youtube',
+        src: `https://www.youtube.com/watch?v=${videoId}&rel=0&showinfo=1`,
+      },
+    ],
     youtube: {
       ytControls: 0,
     },
@@ -81,8 +72,7 @@ class VideoPlayer extends React.Component {
     currentTimeDisplay: true,
   })
 
-  shouldComponentUpdate = (nextProps) =>
-    nextProps.videoId !== this.props.videoId;
+  shouldComponentUpdate = nextProps => nextProps.videoId !== this.props.videoId
 
   componentDidUpdate = () => {
     this.player.src({
@@ -98,11 +88,11 @@ class VideoPlayer extends React.Component {
     return (
       <div className="video-player">
         <div data-vjs-player>
-          <video ref={ node => this.videoNode = node } className="video-js"></video>
+          <video ref={node => (this.videoNode = node)} className="video-js" />
         </div>
       </div>
     )
   }
 }
 
-export default VideoPlayer;
+export default VideoPlayer

@@ -7,6 +7,7 @@ import Breadcrumb from 'components/LayoutComponents/Breadcrumb'
 
 const mapStateToProps = (state, props) => ({
   isUpdatingContent: state.app.isUpdatingContent,
+  theme: state.app.layoutState.themeLight ? 'light' : 'dark',
 })
 
 @connect(mapStateToProps)
@@ -37,8 +38,8 @@ class AppContent extends React.Component {
     return isEmpty(content) ? (
       <div className="utils__loadingPage" />
     ) : (
-      <div className="utils__content">
-        {/* <Breadcrumb name={pathName} /> */}
+      <div className={`utils__content${this.props.theme === 'dark' ? '__dark' : ''}`}>
+        {this.props.theme === 'light' && <Breadcrumb name={pathName} />}
         {content}
       </div>
     )

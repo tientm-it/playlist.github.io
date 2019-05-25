@@ -1,30 +1,30 @@
-.utils__content {
-  padding: 0;
-}
+// .utils__content {
+//   padding: 0 !important;
+// }
 
-.menuTop {
-  z-index: 1;
-  right: 0;
-  background: transparent;
-  background-color: #282c34;
+// .menuTop {
+//   z-index: 1 !important;
+//   right: 0 !important;
+//   background: transparent !important;
+//   background-color: #282c34 !important;
 
-  ul, li {
-    background: transparent;
-  }
+//   ul, li {
+//     background: transparent;
+//   }
 
-  a > span {
-    cursor: pointer !important;
-    color: #fff !important;
-  }
+//   a > span {
+//     cursor: pointer !important;
+//     color: #fff !important;
+//   }
 
-  ul {
-    border: 1px solid transparent !important;
-  }
+//   ul {
+//     border: 1px solid transparent !important;
+//   }
 
-  ul > li:hover {
-    border-color: transparent !important;
-  }
-}
+//   ul > li:hover {
+//     border-color: transparent !important;
+//   }
+// }
 
 .playlist {
   // position: relative;

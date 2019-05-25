@@ -1,5 +1,5 @@
-import React from 'react';
-import { List, Avatar, Icon } from 'antd';
+import React from 'react'
+import { List, Avatar, Icon } from 'antd'
 import { presentTime } from 'utils/ytutil'
 
 const IconText = ({ type, text, onClick }) => (
@@ -7,41 +7,35 @@ const IconText = ({ type, text, onClick }) => (
     <Icon type={type} style={{ marginRight: 8, verticalAlign: 'middle' }} onClick={onClick} />
     <span style={{ verticalAlign: 'middle' }}>{text}</span>
   </span>
-);
+)
 
 class Item extends React.Component {
-  renderItemAction = (removeSong) => {
-    const {
-      id,
-      my,
-      countPlay,
-      liked,
-      playing,
-    } = this.props.data;
+  renderItemAction = removeSong => {
+    const { id, my, countPlay, liked, playing } = this.props.data
 
-    const another = (my && !playing) ? [<IconText type="delete" onClick={() => removeSong(id)} />] : [];
+    const another =
+      my && !playing ? [<IconText type="delete" onClick={() => removeSong(id)} />] : []
     return [
-      ...[
-        <IconText type="eye" text={countPlay} />,
-        <IconText type="like" text={liked} />,
-      ],
+      ...[<IconText type="eye" text={countPlay} />, <IconText type="like" text={liked} />],
       ...another,
-    ];
+    ]
   }
 
   render() {
-    const { data, changeSong, removeSong } = this.props;
+    const { data, changeSong, removeSong } = this.props
 
-    return(
+    return (
       <List.Item
         key={data.id}
         actions={this.renderItemAction(removeSong)}
         extra={
-          data.playing ? <img
-            width={80}
-            src={`${process.env.PUBLIC_URL}/resources/images/equalizer-bars.gif`}
-            alt='Playing...'
-          />: null
+          data.playing ? (
+            <img
+              width={80}
+              src={`${process.env.PUBLIC_URL}/resources/images/equalizer-bars.gif`}
+              alt="Playing..."
+            />
+          ) : null
         }
       >
         <List.Item.Meta
@@ -63,12 +57,10 @@ class Item extends React.Component {
           onClick={() => changeSong(data)}
           style={{ cursor: 'pointer' }}
         />
-          <div className="video-duration">
-            {presentTime(data.duration)}
-          </div>
+        <div className="video-duration">{presentTime(data.duration)}</div>
       </List.Item>
-    );
+    )
   }
 }
 
-export default Item;
+export default Item

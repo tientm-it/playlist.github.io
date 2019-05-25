@@ -160,12 +160,14 @@ class MenuTop extends React.Component {
     const { selectedKeys, openKeys, theme } = this.state
     const menuItems = this.generateMenuPartitions(menuData)
     return (
-      <div className="menuTop">
-        {/* <div className="menuTop__logo">
-          <div className="menuTop__logoContainer">
-            <img src="resources/images/music-logo.png" alt="" />
+      <div className={`menuTop${theme === 'dark' ? '__dark' : ''}`}>
+        {theme === 'light' ? (
+          <div className="menuTop__logo">
+            <div className="menuTop__logoContainer">
+              <img src="resources/images/music-logo.png" alt="" />
+            </div>
           </div>
-        </div> */}
+        ) : null}
         <Menu
           theme={theme}
           onClick={this.handleClick}

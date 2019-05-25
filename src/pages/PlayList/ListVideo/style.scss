@@ -45,6 +45,13 @@
 
 .list-filter {
   padding-bottom: 1rem;
+
+  .group-right {
+    input {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+  }
 }
 
 .list-tools {

@@ -1,131 +1,140 @@
-import React from 'react';
-import { Col, Row, notification  } from 'antd';
+import React from 'react'
+import { Col, Row, notification } from 'antd'
+import { connect } from 'react-redux'
+import { setLayoutState } from 'ducks/app'
+import ReactGA from 'react-ga'
 
-import ParticleComponent from "components/ParticleBackground";
-import VideoPlayer from "components/VideoPlayer";
-import Page from "components/LayoutComponents/Page";
-import {
-  shuffleWithPriority,
-  isVideoExisted,
-} from "utils/ytutil";
+import ParticleComponent from 'components/ParticleBackground'
+import VideoPlayer from 'components/VideoPlayer'
+import Page from 'components/LayoutComponents/Page'
+import { shuffleWithPriority, isVideoExisted } from 'utils/ytutil'
 
-import ListVideo from './ListVideo';
-import {
-  getSetting,
-  getVideos,
-  countPlayChange,
-  deleteVideo,
-} from './apis';
+import ListVideo from './ListVideo'
+import { getSetting, getVideos, countPlayChange, deleteVideo } from './apis'
 
-import 'video.js/dist/video-js.css';
-import './style.scss';
+import 'video.js/dist/video-js.css'
+import './style.scss'
 
+const mapStateToProps = (state, props) => ({
+  layoutState: state.app.layoutState,
+})
+
+@connect(mapStateToProps)
 class PlayList extends React.Component {
   static defaultProps = {
-    pathName: "test",
-    roles: ["agent", "administrator"],
-    username: window.localStorage.getItem("app.username"),
-    playplistId: "PLbBWXuqbWaF2m8U9Pt63fO08ltWijDZtl",
-  };
+    pathName: 'test',
+    roles: ['agent', 'administrator'],
+    username: window.localStorage.getItem('app.username'),
+    playplistId: 'PLbBWXuqbWaF2m8U9Pt63fO08ltWijDZtl',
+  }
 
   state = {
     playlistSettings: null,
     currentPlaying: {},
     playlist: [],
-  };
+  }
 
   componentWillMount = async () => {
-    const { username, playplistId } = this.props;
+    // Google analytics
+    ReactGA.initialize('UA-140807074-1')
+    ReactGA.pageview(window.location.hash)
 
-    const settingRes = await getSetting(playplistId);
-    const playlist = await getVideos(playplistId, settingRes.settings);
+    const { username, playplistId, dispatch } = this.props
+    dispatch(setLayoutState({ themeLight: false }))
+
+    const settingRes = await getSetting(playplistId)
+    const playlist = await getVideos(playplistId, settingRes.settings)
     if (playlist) {
-      countPlayChange(playlist[0].id);
-      playlist[0].countPlay += 1;
+      countPlayChange(playlist[0].id)
+      playlist[0].countPlay += 1
     }
     this.setState({
       playlist: playlist.map(song => ({ ...song, my: song.requester === username })),
       currentPlaying: playlist ? playlist[0] || {} : {},
       playlistSettings: { ...settingRes.settings },
-    });
+    })
 
     // eslint-disable-next-line no-undef
-    this.firebaseRef = new Firebase("https://playlistcontrol-224115.firebaseio.com/videos");
+    this.firebaseRef = new Firebase('https://playlistcontrol-224115.firebaseio.com/videos')
     this.firebaseRef.on(
-      "child_changed",
+      'child_changed',
       function(dataSnapshot) {
-        const newVideo = dataSnapshot.val();
+        const newVideo = dataSnapshot.val()
 
         // check add new or remove video from playlist
         if (!newVideo.playlists || !newVideo.playlists[playplistId]) {
           if (newVideo.requester !== this.props.username) {
-            this.removeVideo(newVideo.id);
+            this.removeVideo(newVideo.id)
 
             notification.open({
-              type: "info",
-              message: `The video [${newVideo.name}] has just deleted by ${newVideo.requester} from the playlist!`
-            });
+              type: 'info',
+              message: `The video [${newVideo.name}] has just deleted by ${
+                newVideo.requester
+              } from the playlist!`,
+            })
           }
         } else {
           if (newVideo.requester !== this.props.username) {
             // add if not existing
             if (!isVideoExisted(newVideo.id, this.state.playlist)) {
-              this.onNewVideo(newVideo);
+              this.onNewVideo(newVideo)
             }
           }
           // update count play, like,...
-          this.onUpdateVideo(newVideo);
+          this.onUpdateVideo(newVideo)
         }
-      }.bind(this)
-    );
+      }.bind(this),
+    )
 
     this.firebaseRef.on(
-      "child_added",
+      'child_added',
       function(dataSnapshot) {
-        const newVideo = dataSnapshot.val();
+        const newVideo = dataSnapshot.val()
         if (newVideo.playlists && newVideo.playlists[playplistId]) {
           if (!isVideoExisted(newVideo.id, this.state.playlist)) {
             // console.log('new video', newVideo)
-            this.onNewVideo(newVideo);
+            this.onNewVideo(newVideo)
           }
         }
-      }.bind(this)
-    );
+      }.bind(this),
+    )
   }
 
   componentWillUnmount() {
-    this.firebaseRef.off();
+    this.firebaseRef.off()
   }
 
   onNewVideo = newVideo => {
-    const { playlistSettings } = this.props;
-    this.addVideo(newVideo);
+    const { playlistSettings } = this.props
+    this.addVideo(newVideo)
     // shuffle the list if videoAddedShuffle = true
     if (playlistSettings && playlistSettings.videoAddedShuffle) {
       // console.log('===> videoAddedShuffle = true')
-      this.handleShuffle();
+      this.handleShuffle()
     }
 
     notification.open({
-      type: "info",
-      message: `New video [${newVideo.name}] has just added by ${newVideo.requester} into the playlist!`
-    });
-  };
+      type: 'info',
+      message: `New video [${newVideo.name}] has just added by ${
+        newVideo.requester
+      } into the playlist!`,
+    })
+  }
 
   onUpdateVideo = newVideo => {
-    const { playlist, currentPlaying } = this.state;
+    const { playlist, currentPlaying } = this.state
     // prevent duplicate
-    const newList = [];
+    const newList = []
     playlist.forEach(song => {
       if (song.id === newVideo.id) {
         newList.push(newVideo)
       } else {
-        newList.push(song);
+        newList.push(song)
       }
-    });
-    let newCurrent = currentPlaying;
+    })
+    let newCurrent = currentPlaying
     if (newVideo.id === currentPlaying.id) {
-      newCurrent = newVideo;
+      newCurrent = newVideo
     }
     this.setState({
       playlist: newList,
@@ -134,72 +143,69 @@ class PlayList extends React.Component {
   }
 
   addVideo = video => {
-    const { playlist } = this.state;
+    const { playlist } = this.state
     // prevent duplicate
-    const oldVideo = playlist.find(v => v.id === video.id);
+    const oldVideo = playlist.find(v => v.id === video.id)
     if (!oldVideo) {
-      playlist.push(video);
-      this.setState({ playlist });
+      playlist.push(video)
+      this.setState({ playlist })
     }
-  };
+  }
 
   removeVideo = videoId => {
-    deleteVideo(videoId, this.props.playplistId, (result) => {
+    deleteVideo(videoId, this.props.playplistId, result => {
       if (result) {
         let currentList = this.state.playlist.filter(video => {
-          return video.id !== videoId;
-        });
-        this.setState({ playlist: currentList });
+          return video.id !== videoId
+        })
+        this.setState({ playlist: currentList })
 
         notification.open({
-          type: "success",
-          message: "Video is removed from the playlist!"
-        });
+          type: 'success',
+          message: 'Video is removed from the playlist!',
+        })
       } else {
         notification.open({
-          type: "error",
-          message: "Some thing error!"
-        });
+          type: 'error',
+          message: 'Some thing error!',
+        })
       }
     })
-  };
+  }
 
-  handleSongError = (message) => {
-    const { currentPlaying } = this.state;
+  handleSongError = message => {
+    const { currentPlaying } = this.state
     notification.warning({
       message: currentPlaying.name,
-      description: message
-    });
+      description: message,
+    })
 
     this.handleNextSong()
   }
 
   handleNextSong = () => {
-    const { playlist, currentPlaying } = this.state;
-    let idx = playlist.map(song => song.id).indexOf(currentPlaying.id) + 1;
+    const { playlist, currentPlaying } = this.state
+    let idx = playlist.map(song => song.id).indexOf(currentPlaying.id) + 1
     if (idx === playlist.length) {
-      idx = 0;
+      idx = 0
     }
-    this.handleChangeSong(playlist[idx]);
+    this.handleChangeSong(playlist[idx])
   }
 
-  handleChangeSong = (songInfo) => {
-    const { currentPlaying } = this.state;
+  handleChangeSong = songInfo => {
+    const { currentPlaying } = this.state
 
     if (currentPlaying.id !== songInfo.id) {
       this.setState({
         currentPlaying: songInfo,
       })
-      countPlayChange(songInfo.id);
+      countPlayChange(songInfo.id)
     }
   }
 
   handleShuffle = () => {
-    const {
-      playlistSettings,
-      playlist,
-    } = this.state;
-    const shuffledPlaylist = shuffleWithPriority(playlistSettings.lowPriorityReportNum, playlist);
+    const { playlistSettings, playlist } = this.state
+    const shuffledPlaylist = shuffleWithPriority(playlistSettings.lowPriorityReportNum, playlist)
 
     this.setState({
       playlist: shuffledPlaylist,
@@ -207,10 +213,12 @@ class PlayList extends React.Component {
   }
 
   render() {
-    const { currentPlaying, playlist } = this.state;
+    const { username } = this.props
+    const { currentPlaying, playlist } = this.state
     const data = playlist.map(song => {
-      song.playing = song.id === currentPlaying.id;
-      return song;
+      song.my = song.requester === username
+      song.playing = song.id === currentPlaying.id
+      return song
     })
 
     return (
@@ -218,7 +226,7 @@ class PlayList extends React.Component {
         <div className="playlist">
           <ParticleComponent />
           <Row className="playlist__wapper">
-            <Col xs={24} sm={24} md={24} lg={14} xl={14} style={{ padding: "10px" }}>
+            <Col xs={24} sm={24} md={24} lg={14} xl={14} style={{ padding: '10px' }}>
               <VideoPlayer
                 videoId={currentPlaying.id}
                 nextSong={this.handleNextSong}
@@ -227,7 +235,7 @@ class PlayList extends React.Component {
               <div>{currentPlaying.name}</div>
               <div>{currentPlaying.countPlay} Views</div>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={10} xl={10} style={{ padding: "10px" }}>
+            <Col xs={24} sm={24} md={24} lg={10} xl={10} style={{ padding: '10px' }}>
               <ListVideo
                 listSong={data}
                 changeSong={this.handleChangeSong}
@@ -239,8 +247,8 @@ class PlayList extends React.Component {
           </Row>
         </div>
       </Page>
-    );
+    )
   }
 }
 
-export default PlayList;
+export default PlayList

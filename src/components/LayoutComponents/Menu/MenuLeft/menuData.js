@@ -1,20 +1,20 @@
 export default [
   {
-    title: 'Dashboard Alpha',
-    key: 'dashboardAlpha',
-    url: '/dashboard/alpha',
-    icon: 'icmn icmn-stack',
+    title: 'Logout',
+    key: 'logout',
+    url: '/logout',
+    icon: 'icmn icmn-exit',
   },
   {
-    title: 'Empty Page',
-    key: 'empty',
-    url: '/empty',
-    icon: 'icmn icmn-books',
-  },
-  {
-    title: 'Playlist',
-    key: 'Playlist',
+    title: 'Light Theme',
+    key: 'lighttheme',
     url: '/Playlist',
-    icon: 'icmn icmm-file-play',
+    icon: 'icmn icmn-happy2',
+  },
+  {
+    title: 'Dark Theme',
+    key: 'darktheme',
+    url: '/Playlist/dark',
+    icon: 'icmn icmn-happy',
   },
 ]
