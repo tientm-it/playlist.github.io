@@ -1,0 +1,80 @@
+.list-video {
+
+  li {
+    border-bottom: none !important;
+  }
+
+  .list-video-title {
+    text-align: left;
+
+    &-name {
+      font-weight: 600;
+      color: white;
+      text-align: justify;
+    }
+
+    &-author {
+      color: #a5a4a4;
+    }
+  }
+
+  .ant-list-item-action {
+    text-align: left;
+
+    span, i {
+      color: white;
+    }
+  }
+
+  .video-duration {
+    line-height: 20px;
+    width: 40px;
+    position: absolute;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    top: 20px;
+    left: 10px;
+    text-align: center;
+    border-radius: 5px;
+  }
+
+  .ant-list-item {
+    position: relative;
+  }
+}
+
+.list-filter {
+  padding-bottom: 1rem;
+}
+
+.list-tools {
+  padding-bottom: 1rem;
+
+  button {
+    margin: 0 10px;
+
+    i {
+      font-size: 30px;
+    }
+
+    &:focus {
+      color: #FFFFFF !important;
+    }
+
+    &:hover, &:active {
+      color: #FA8072 !important;
+    }
+  }
+
+  button:first-of-type {
+    margin-left: 0;
+  }
+
+  button:last-of-type {
+    margin-right: 0;
+  }
+
+  &.tool-active {
+    color: #FA8072 !important;
+  }
+}
