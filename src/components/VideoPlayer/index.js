@@ -1,6 +1,5 @@
 import React from 'react'
 import videojs from 'video.js'
-import { Icon } from 'antd'
 
 import 'videojs-youtube'
 
@@ -33,13 +32,10 @@ class VideoPlayer extends React.Component {
         setTimeout(nextSong(), 2000)
       })
       this.on('error', error => {
-        console.log(this)
-        console.log(this.error_.message)
+        console.log(error)
         setTimeout(errorSong(this.error_.message), 2000)
       })
       this.getChild('controlBar').addChild('NextTrack', {}, 1)
-
-      console.log(this)
     })
   }
 

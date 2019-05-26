@@ -57,11 +57,6 @@ class ListVideo extends React.Component {
           <Tooltip placement="topLeft" title={'Shuffle playlist'}>
             <Button type="link" shape="circle" icon="swap" ghost onClick={shuffleSong} />
           </Tooltip>
-          <Input.Search
-            placeholder="Search on Youtube"
-            style={{ width: '60%', float: 'right' }}
-            enterButton={<Icon type="youtube" style={{ fontSize: '25px' }} />}
-          />
         </Col>
         <Col className="list-songs">
           <List

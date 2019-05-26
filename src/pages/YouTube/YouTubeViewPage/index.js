@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { setLayoutState } from 'ducks/app'
 import YouTubeView from './YouTubeView'
 import axios from 'axios'
-import ReactGA from 'react-ga'
 import { API_URL } from '../../../utils/config'
 
 const mapStateToProps = (state, props) => ({
@@ -31,10 +30,6 @@ class YouTubeViewPage extends React.Component {
   }
 
   componentWillMount() {
-    // Google analytics
-    ReactGA.initialize('UA-140807074-1')
-    ReactGA.pageview(window.location.hash)
-
     const { dispatch } = this.props
     dispatch(setLayoutState({ themeLight: true }))
   }

@@ -15,10 +15,7 @@ class Item extends React.Component {
 
     const another =
       my && !playing ? [<IconText type="delete" onClick={() => removeSong(id)} />] : []
-    return [
-      ...[<IconText type="eye" text={countPlay} />, <IconText type="like" text={liked} />],
-      ...another,
-    ]
+    return [...[<IconText type="like" text={liked} />], ...another]
   }
 
   render() {
@@ -53,7 +50,12 @@ class Item extends React.Component {
             </div>
           }
           title={<div className="list-video-title-name">{data.name}</div>}
-          description={<div className="list-video-title-author">{data.author}</div>}
+          description={
+            <div className="list-video-title description">
+              <div className="list-video-title-author">{data.author}</div>
+              <div className="list-video-title-view">{`${data.countPlay} Views`}</div>
+            </div>
+          }
           onClick={() => changeSong(data)}
           style={{ cursor: 'pointer' }}
         />

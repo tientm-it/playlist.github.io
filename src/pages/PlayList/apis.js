@@ -42,9 +42,7 @@ export const getVideos = (playplistId, videoSettings) =>
 export const countPlayChange = videoId => {
   axios
     .get(`${API_URL}/videos/countPlay?videoId=${videoId}`)
-    .then(result => {
-      console.log(result)
-    })
+    .then(result => {})
     .catch(error => {
       return []
     })

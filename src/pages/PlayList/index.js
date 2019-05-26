@@ -44,7 +44,7 @@ class PlayList extends React.Component {
 
     const settingRes = await getSetting(playplistId)
     const playlist = await getVideos(playplistId, settingRes.settings)
-    if (playlist) {
+    if (playlist.length > 0) {
       countPlayChange(playlist[0].id)
       playlist[0].countPlay += 1
     }
@@ -143,6 +143,7 @@ class PlayList extends React.Component {
   }
 
   addVideo = video => {
+    ReactGA.pageview(`${window.location.hash}/addVideo`)
     const { playlist } = this.state
     // prevent duplicate
     const oldVideo = playlist.find(v => v.id === video.id)
@@ -155,6 +156,7 @@ class PlayList extends React.Component {
   removeVideo = videoId => {
     deleteVideo(videoId, this.props.playplistId, result => {
       if (result) {
+        ReactGA.pageview(`${window.location.hash}/removeVideo`)
         let currentList = this.state.playlist.filter(video => {
           return video.id !== videoId
         })
@@ -196,6 +198,7 @@ class PlayList extends React.Component {
     const { currentPlaying } = this.state
 
     if (currentPlaying.id !== songInfo.id) {
+      ReactGA.pageview(`${window.location.hash}/changeVideo`)
       this.setState({
         currentPlaying: songInfo,
       })

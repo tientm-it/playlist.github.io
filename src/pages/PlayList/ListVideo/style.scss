@@ -13,8 +13,12 @@
       text-align: justify;
     }
 
-    &-author {
+    &.description {
       color: #a5a4a4;
+
+      div:not(:first-child) {
+        margin-top: 12px;
+      }
     }
   }
 
